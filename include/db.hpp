@@ -4,20 +4,25 @@
 #include <vector>
 #include <tuple>
 #include <WString.h>
+#include <FS.h>
 
 struct Expense {
-    String date;
-    String description;
-    float value;
+  long id;
+  String date;
+  String description;
+  float value;
 };
 
 class Db {
 public:
-  void add_record(String date, String description, float value);
-  const std::vector<Expense>& get_records() const { return records; } 
-  std::vector<std::tuple<String, String, float>> get_std_records() const;
+  Db() : last_id{-1} {}
+  void add_record(fs::FS &fs, String date, String description, float value);
+  std::vector<std::tuple<long, String, String, float>> get_std_records(fs::FS &fs);
+  void delete_record(fs::FS &fs, long id);
+  long last_id;
 private:
-  std::vector<Expense> records;
+  void update_last_id();
+  const String db_file{"/expenses_v3.csv"};
 };
 
 #endif // DB_HPP_

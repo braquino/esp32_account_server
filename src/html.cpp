@@ -86,15 +86,16 @@ String Html::get_insert_page() {
 )--";
 }
 
-String Html::get_records_page(const std::vector<std::tuple<String, String, float>>& records) {
+String Html::get_records_page(const std::vector<std::tuple<long, String, String, float>>& records) {
   String html_rows;
   float sum = 0.0;
-  for (const std::tuple<String, String, float>& t : records) {
-    float v = std::get<2>(t);
+  for (const std::tuple<long, String, String, float>& t : records) {
+    float v = std::get<3>(t);
+    long id = std::get<0>(t);
     sum += v;
-    html_rows += "<tr><td>" + std::get<0>(t) + "</td><td>" + std::get<1>(t) + "</td><td>" + String(v) + "</td><tr>";
+    html_rows += "<tr><td>" + String(id) + "</td><td>" + std::get<1>(t) + "</td><td>" + std::get<2>(t) + "</td><td>" + String(v) + "</td><tr>";
   }
-  html_rows += "<tr><th>Total</th><th></th><th>" + String(sum) + "</th><tr>";
+  html_rows += "<tr><th></th><th></th><th>Total</th><th id=\"total\">" + String(sum) + "</th><tr>";
   return R"--(
 <!DOCTYPE html>
 <html>
@@ -123,6 +124,22 @@ String Html::get_records_page(const std::vector<std::tuple<String, String, float
     .button2 {
       background-color: #555555;
     }
+    table.exp {
+      max-width: 400px;
+      width: 100%;
+    }
+    table.exp th, table.exp td {
+      border: 1px solid white;
+      border-collapse: collapse;
+    }
+    table.exp th {
+      background-color: #333333;
+      font-style: bold;
+    }
+    table.exp td {
+      background-color: #777777;
+      text-align: left;
+    }
   </style>
 </head>
 <body style="background-color: #555555;color: #ffffff;">
@@ -131,20 +148,45 @@ String Html::get_records_page(const std::vector<std::tuple<String, String, float
       <h1>Expense list:</h1>
     </tr>
     <tr>
-      <table>
+      <table class="exp">
         <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Value</th>
+          <th style="width: 10%;">Id</th>
+          <th style="width: 30%;">Date</th>
+          <th style="width: 40%;">Description</th>
+          <th style="width: 30%;">Value</th>
         </tr>)--" + html_rows +
 
-R"--(      </table>
+R"--(      <tr><th></th><th></th><th id="sit_label"></th><th id="situation"></th><tr></tr>
+      </table>
       <p>
-        <a href="/insert_page.html"><button class="button">Insert expense</button></a>
+        <a href="/insert_page.html"><button class="button" style="width: 255px;">Insert expense</button></a>
+      </p>
+      <p>
+        <form name="delete" action="/records_page.html">
+          <table>
+            <tr>
+              <td>
+                <label for="fname">Id:</label>
+              </td>
+              <td>
+                <input type="text" id="id" name="id" required pattern="^\d*$" style="width: 50px;">
+              </td>
+              <td>
+                <input type="submit" value="Del record" class="button">
+              </td>
+        </form>
       </p>
     </tr>
   </table>
 </body>
+<script>
+  var currentDay = new Date().getDate();
+  var total = document.getElementById("total");
+  var sit_label = document.getElementById("sit_label");
+  sit_label.innerText = "Situation on day: " + currentDay;
+  var situaltion = document.getElementById("situation");
+  situaltion.innerText = (30 * currentDay) - Number(total.innerText);
+</script>
 </html>
 
 )--";

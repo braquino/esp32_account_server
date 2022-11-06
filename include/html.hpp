@@ -10,7 +10,7 @@ public:
     Html();
     String get_home(bool btn_5_press, bool btn_2_press);
     String get_insert_page();
-    String get_records_page(const std::vector<std::tuple<String, String, float>>& records);
+    String get_records_page(const std::vector<std::tuple<long, String, String, float>>& records);
 private:
     
 };

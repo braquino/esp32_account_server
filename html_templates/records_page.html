@@ -25,6 +25,22 @@
     .button2 {
       background-color: #555555;
     }
+    table.exp {
+      max-width: 400px;
+      width: 100%;
+    }
+    table.exp th, table.exp td {
+      border: 1px solid white;
+      border-collapse: collapse;
+    }
+    table.exp th {
+      background-color: #333333;
+      font-style: bold;
+    }
+    table.exp td {
+      background-color: #777777;
+      text-align: left;
+    }
   </style>
 </head>
 <body style="background-color: #555555;color: #ffffff;">
@@ -33,22 +49,49 @@
       <h1>Expense list:</h1>
     </tr>
     <tr>
-      <table>
+      <table class="exp">
         <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Value</th>
+          <th style="width: 10%;">Id</th>
+          <th style="width: 30%;">Date</th>
+          <th style="width: 40%;">Description</th>
+          <th style="width: 30%;">Value</th>
         </tr>
         <tr>
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
         </tr>
+        <tr><th></th><th></th><th>Total</th><th id="total">1258.43</th><tr>
+        <tr><th></th><th></th><th id="sit_label"></th><th id="situation"></th><tr></tr>
       </table>
       <p>
-        <a href="/insert_page.html"><button class="button">Insert expense</button></a>
+        <a href="/insert_page.html"><button class="button" style="width: 255px;">Insert expense</button></a>
+      </p>
+      <p>
+        <form name="delete" action="/records_page.html">
+          <table>
+            <tr>
+              <td>
+                <label for="fname">Id:</label>
+              </td>
+              <td>
+                <input type="text" id="id" name="id" required pattern="^\d*$" style="width: 50px;">
+              </td>
+              <td>
+                <input type="submit" value="Del record" class="button">
+              </td>
+        </form>
       </p>
     </tr>
   </table>
 </body>
+<script>
+  var currentDay = new Date().getDate();
+  var total = document.getElementById("total");
+  var sit_label = document.getElementById("sit_label");
+  sit_label.innerText = "Situation on day: " + currentDay;
+  var situaltion = document.getElementById("situation");
+  situaltion.innerText = (30 * currentDay) - Number(total.innerText);
+</script>
 </html>
